@@ -1,0 +1,9 @@
+{% if latest_question_list  %}
+    <ul>
+        {% for q in latest_question_list %}
+            <li><a href='/mc_poll/{{ q.id }}'>{{ q.question_text }}</a></li>
+        {% endfor %}
+    </ul>
+{% else %}
+    <p>No Polls Found</p>
+{% endif %}
