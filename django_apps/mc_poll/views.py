@@ -1,6 +1,7 @@
 from django.shortcuts import get_object_or_404, render
-from django.http import HttpResponse # TODO: Remove this after all the HttpResponse has been modified
-from .models import Question
+from django.http import HttpResponse, HttpResponseRedirect
+from django.urls import reverse
+from .models import Question, Choice
 
 def index(request):
     latest_question_list = Question.objects.order_by('-pub_date')[:5]
@@ -11,8 +12,21 @@ def details(request, question_id):
     return render(request, 'polls/details.html', {'question': question})
 
 def results(request, question_id):
-    response = "You are looking at the result of Question %s."
-    return HttpResponse(response % question_id)
+    question = get_object_or_404(Question, pk=question_id)
+    return render(request, 'polls/results.html', {'question': question})
 
-def votes(request, question_id):
-    return HttpResponse("You are voting on Question %s" % question_id)
+def vote(request, question_id):
+    question = get_object_or_404(Question, pk=question_id)
+    try:
+        selected_choice = question.choice_set.get(pk=request.POST['choice'])
+    except (KeyError, Choice.DoesNotExist):
+        context = {'question': question,
+                   'error_message': 'You didn\'t select a choice.'}
+        return render(request,
+                      "polls/details.html",
+                      context)
+    else:
+        selected_choice.votes += 1
+        selected_choice.save()
+        return HttpResponseRedirect(reverse('mc_poll:results', args=(question_id,)))
+    return

@@ -2,6 +2,7 @@ from django.urls import path
 
 from . import views
 
+app_name = 'mc_poll'
 urlpatterns = [
     # ex: /mc_poll/
     path('', views.index, name='index'),
@@ -10,5 +11,5 @@ urlpatterns = [
     # ex: /mc_poll/1/results
     path('<int:question_id>/results/', views.results, name='results'),
     # ex: /mc_poll/1/votes
-    path('<int:question_id>/votes/', views.votes, name='votes')
+    path('<int:question_id>/vote/', views.vote, name='vote')
 ]
