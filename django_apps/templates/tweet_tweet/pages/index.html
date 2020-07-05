@@ -8,7 +8,7 @@
 <div class="row">
     <div class="col-md-10 mx-auto mb-4 col-10">
         <form class="form" method="POST" action="tweets/create/"> {% csrf_token %}
-            <input type="hidden" value="/" name="next" />
+            <input type="hidden" value="{% url 'tweet_tweet:index' %}" name="next" />
             <textarea class="form-control" name="content" placeholder="Your tweet goes here..."></textarea>
             <button type="submit" class="mt-4 btn btn-warning">Tweet</button>
         </form>

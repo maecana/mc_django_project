@@ -1,7 +1,7 @@
 import random
 
-from django.shortcuts import render, get_object_or_404, reverse
-from django.http import JsonResponse, HttpResponseRedirect
+from django.shortcuts import render, get_object_or_404, redirect
+from django.http import JsonResponse
 
 from .forms import FormTweet
 from .models import Tweet
@@ -13,11 +13,15 @@ def index(request, *args, **kwargs):
 # tweet create view
 def tweet_create_view(request, *args, **kwargs):
     form = FormTweet(request.POST or None)
+    next_url = request.POST.get('next') or None
     if form.is_valid():
         obj = form.save(commit=False)
         obj.save()
+
+        if next_url != None:
+            return redirect(next_url)
         form = FormTweet()
-    return HttpResponseRedirect(reverse('tweet_tweet:index'))
+    return
 
 # tweet list view
 def tweet_list_view(request, *args, **kwargs):
