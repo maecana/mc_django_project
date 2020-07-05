@@ -3,7 +3,18 @@
 {% block head_title %}Home{% endblock head_title %}
 
 {% block content %}
-<div class='text-center mb-4'><h1>Welcome to Tweet Tweet</h1></div>
+<div class="text-center mb-4"><h1>Welcome to Tweet Tweet</h1></div>
+
+<div class="row">
+    <div class="col-md-10 mx-auto mb-4 col-10">
+        <form class="form" method="POST" action="tweets/create/"> {% csrf_token %}
+            <input type="hidden" value="/" name="next" />
+            <textarea class="form-control" name="content" placeholder="Your tweet goes here..."></textarea>
+            <button type="submit" class="mt-4 btn btn-warning">Tweet</button>
+        </form>
+    </div>
+</div>
+
 <div id='tweets'>Loading...</div>
 
 <script type="text/javascript">
@@ -40,7 +51,7 @@
 
     likeBtn = (tweet) => {
         let btn =
-        `<button class='btn btn-danger btn-sm' id="like-${tweet.id}">${tweet.likes}Like</button>`
+        `<button class='btn btn-danger btn-sm' id="like-${tweet.id}">${tweet.likes} Likes</button>`
 
         return btn
     }

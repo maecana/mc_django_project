@@ -1,13 +1,23 @@
 import random
 
-from django.shortcuts import render, get_object_or_404
-from django.http import JsonResponse
+from django.shortcuts import render, get_object_or_404, reverse
+from django.http import JsonResponse, HttpResponseRedirect
 
+from .forms import FormTweet
 from .models import Tweet
 
 # index view
 def index(request, *args, **kwargs):
     return render(request, 'tweet_tweet/pages/index.html', context={}, status=200)
+
+# tweet create view
+def tweet_create_view(request, *args, **kwargs):
+    form = FormTweet(request.POST or None)
+    if form.is_valid():
+        obj = form.save(commit=False)
+        obj.save()
+        form = FormTweet()
+    return HttpResponseRedirect(reverse('tweet_tweet:index'))
 
 # tweet list view
 def tweet_list_view(request, *args, **kwargs):
