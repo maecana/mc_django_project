@@ -2,9 +2,15 @@ import random
 
 from django.shortcuts import render, get_object_or_404, redirect
 from django.http import JsonResponse
+from django.utils.http import is_safe_url
+from django.conf import settings
 
+# imports from Model
 from .forms import FormTweet
 from .models import Tweet
+
+
+ALLOWED_HOSTS = settings.ALLOWED_HOSTS
 
 # index view
 def index(request, *args, **kwargs):
@@ -18,10 +24,10 @@ def tweet_create_view(request, *args, **kwargs):
         obj = form.save(commit=False)
         obj.save()
 
-        if next_url != None:
+        if next_url != None or is_safe_url(next_url, ALLOWED_HOSTS):
             return redirect(next_url)
         form = FormTweet()
-    return
+    return render(request, 'tweet_tweet/components/form.html', context={'form':form})
 
 # tweet list view
 def tweet_list_view(request, *args, **kwargs):
