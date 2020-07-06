@@ -17,7 +17,9 @@ from django.contrib import admin
 from django.urls import include, path
 
 urlpatterns = [
-    path('tweet_tweet/', include('tweet_tweet.urls')),
+    # include tweet_tweet urls
+    path('', include('tweet_tweet.urls')),
+    # include mc_poll urls
     path('mc_poll/', include('mc_poll.urls')),
     path('admin/', admin.site.urls),
 ]
