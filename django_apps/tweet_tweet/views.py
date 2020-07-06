@@ -23,8 +23,9 @@ def tweet_create_view(request, *args, **kwargs):
     if form.is_valid():
         obj = form.save(commit=False)
         obj.save()
-
-        if next_url != None or is_safe_url(next_url, ALLOWED_HOSTS):
+        print(ALLOWED_HOSTS)
+        print(is_safe_url(next_url, ALLOWED_HOSTS))
+        if next_url != None and is_safe_url(next_url, ALLOWED_HOSTS):
             return redirect(next_url)
         form = FormTweet()
     return render(request, 'tweet_tweet/components/form.html', context={'form':form})
