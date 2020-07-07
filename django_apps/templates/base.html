@@ -8,11 +8,13 @@
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
 
-    <title>{% block head_title %}{% endblock head_title %}</title>
+    <title>Tweet | {% block head_title %}{% endblock head_title %}</title>
   </head>
   <body>
+    <!-- include navigation bar -->
     {% include 'tweet_tweet/components/navbar.html' %}
     
+    <!-- contents -->
     <div class='container mt-4'>
       {% block content %}{% endblock content %}
     </div>
