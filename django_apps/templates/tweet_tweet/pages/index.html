@@ -56,20 +56,23 @@
             const serverResponse = xhr.response;
             const responseStatus = xhr.status;
             
+            // elements are successfully saved
             if(responseStatus === 201) {
                 const formattedStr = formatTweetsContent(serverResponse);
                 const origHTML = tweetsElement.innerHTML;
                 tweetsElement.innerHTML = formattedStr + origHTML;
 
                 form.reset();
-            } else if(responseStatus === 400) {
+            } // elements are too long
+            else if(responseStatus === 400) {
                 const errObj = serverResponse.content;
                 if(errObj) {
                     alert(errObj[0])
                 } else {
                    alert('Oops! An error occurred.');
                 }
-            } else {
+            } // error on server
+            else {
                 alert('Oops! An error occurred.'+
                   "\nPlease check your internet connection,"+
                   "\nand try again later."+
