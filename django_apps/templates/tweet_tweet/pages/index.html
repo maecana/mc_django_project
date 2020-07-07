@@ -55,7 +55,11 @@
         xhr.onload = () => {
             const serverResponse = xhr.response;
             const responseStatus = xhr.status;
-            console.log(responseStatus, serverResponse);
+            const formattedStr = formatTweetsContent(serverResponse);
+            const origHTML = tweetsElement.innerHTML;
+            tweetsElement.innerHTML = formattedStr + origHTML;
+
+            form.reset();
         }
 
         // send xhr with form data
