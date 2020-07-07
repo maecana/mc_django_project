@@ -6,55 +6,112 @@
 <div class="text-center mb-4"><h1>Welcome to Tweet Tweet</h1></div>
 
 <div class="row">
-    <div class="col-md-10 mx-auto mb-4 col-10">
-        <form class="form" method="POST" action="tweets/create/"> {% csrf_token %}
-            <input type="hidden" value="{% url 'tweet_tweet:index' %}" name="next" />
+    <div class="col-10 mx-auto mb-4">
+        <form class="form" method="POST" id="form-element" action="tweets/create/"> {% csrf_token %}
+            <input type="hidden" value="/" name="next" />
             <textarea class="form-control" name="content" placeholder="Your tweet goes here..."></textarea>
-            <button type="submit" class="mt-4 btn btn-warning">Tweet</button>
+            <div class="float-right mt-1">
+                <button type="submit" class="btn btn-warning">Tweet</button>
+            </div>
         </form>
     </div>
 </div>
 
-<div id='tweets'>Loading...</div>
+<div id="tweets">
+    <h5 class="text-center">Loading...</h5>
+</div>
 
 <script type="text/javascript">
-    const tweetsElement = document.getElementById('tweets')
+    // get tweet element
+    const tweetsElement = document.getElementById('tweets');
+    
+    // get form element
+    const formElement = document.getElementById('form-element');
 
-    const xhr = new XMLHttpRequest()
-    const method = 'GET' // POST
-    const url = 'tweets/' // name=list, method=tweet_list_view
-    const responseType = 'json'
+    // ajax for creating new tweet
+    createTweetAjax = (event) => {
+        // prevent default event
+        event.preventDefault();
 
-    xhr.responseType = responseType
-    xhr.open(method, url)
-    xhr.onload = () => {
-        const serverResponse = xhr.response
-        let listItems = serverResponse.response
+        // get form
+        const form = event.target;
 
-        let formattedStr = ''
-        for(let i=0;i<listItems.length;i++) {
-            let listObj = listItems[i]
-            formattedStr += formatTweetsContent(listObj)
+        // create new form data to get csrf and all data in it
+        const formData = new FormData(form);
+        
+        // create xhr
+        const xhr = new XMLHttpRequest();
+
+        // declare xhr attributes
+        const method = form.method;
+        const url = form.action;
+        const responseType = 'json';
+
+        // setup xhr
+        xhr.responseType = responseType;
+        xhr.open(method, url);
+        xhr.setRequestHeader('HTTP_X_REQUESTED_WITH', 'XMLHttpRequest');
+        xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
+        xhr.onload = () => {
+            const serverResponse = xhr.response;
+            const responseStatus = xhr.status;
+            console.log(responseStatus, serverResponse);
         }
-        tweetsElement.innerHTML = formattedStr
-    }
-    xhr.send()
 
+        // send xhr with form data
+        xhr.send(formData);
+    }
+
+    // capture submit event from form
+    formElement.addEventListener('submit', createTweetAjax);
+
+    // request tweet objects & set tweet elements
+    getTweetsObj = () => {
+        // create xhr
+        const xhr = new XMLHttpRequest();
+
+        // declare attributes for xhr
+        const method = 'GET';
+        const url = 'tweets/'; // name=list, method=tweet_list_view
+        const responseType = 'json';
+
+        // setup xhr attributes
+        xhr.responseType = responseType;
+        xhr.open(method, url);
+        xhr.onload = () => {
+            // get xhr response
+            const serverResponse = xhr.response;
+            
+            // get items object
+            const listItems = serverResponse.response;
+
+            let formattedStr = '';
+            for(let i=0;i<listItems.length;i++) {
+                let listObj = listItems[i];
+                formattedStr += formatTweetsContent(listObj);
+            }
+            tweetsElement.innerHTML = formattedStr;
+        }
+
+        // send xhr
+        xhr.send();
+    }
+
+    // initially set tweet elements
+    getTweetsObj();
+
+    // function for formatting Tweet element
     formatTweetsContent = (tweet) => {
-        let formattedStr =
-        `<div class="col-lg-12 col-md-10 py-3 border rounded mx-auto mb-4" id="tweet-${tweet.id}">`+
-            `<p>${tweet.content}</p>`+
-            likeBtn(tweet) +
-        '</div>'
-        return formattedStr
+        return `<div class="col-lg-12 col-md-10 py-3 border rounded mx-auto mb-4" id="tweet-${tweet.id}">` +
+            `<p>${tweet.content}</p>` + likeBtn(tweet) +
+        '</div>';
     }
 
+    // function for creating like button
     likeBtn = (tweet) => {
-        let btn =
-        `<button class='btn btn-danger btn-sm' id="like-${tweet.id}">${tweet.likes} Likes</button>`
-
-        return btn
+        return `<button class='btn btn-danger btn-sm' id="like-${tweet.id}">` +
+            tweet.likes +
+        ' Likes</button>';
     }
 </script>
-
 {% endblock content %}
