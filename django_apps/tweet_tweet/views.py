@@ -37,6 +37,8 @@ def tweet_create_view(request, *args, **kwargs):
             return redirect(next_url)
 
         form = FormTweet()
+    elif form.errors and request.is_ajax():
+        return JsonResponse(form.errors, status=400)
     return render(request, 'tweet_tweet/components/form.html', context={'form':form})
 
 # tweet list view

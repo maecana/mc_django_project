@@ -46,7 +46,7 @@
         const method = form.method;
         const url = form.action;
         const responseType = 'json';
-
+        
         // setup xhr
         xhr.responseType = responseType;
         xhr.open(method, url);
@@ -55,11 +55,34 @@
         xhr.onload = () => {
             const serverResponse = xhr.response;
             const responseStatus = xhr.status;
-            const formattedStr = formatTweetsContent(serverResponse);
-            const origHTML = tweetsElement.innerHTML;
-            tweetsElement.innerHTML = formattedStr + origHTML;
+            
+            if(responseStatus === 201) {
+                const formattedStr = formatTweetsContent(serverResponse);
+                const origHTML = tweetsElement.innerHTML;
+                tweetsElement.innerHTML = formattedStr + origHTML;
 
-            form.reset();
+                form.reset();
+            } else if(responseStatus === 400) {
+                const errObj = serverResponse.content;
+                if(errObj) {
+                    alert(errObj[0])
+                } else {
+                   alert('Oops! An error occurred.');
+                }
+            } else {
+                alert('Oops! An error occurred.'+
+                  "\nPlease check your internet connection,"+
+                  "\nand try again later."+
+                  "\nOr contact System Administrator.");
+            }
+        }
+        
+        // on server error
+        xhr.onerror = () => {
+            alert('Uh-oh! An error occurred.'+
+                  "\nPlease check your internet connection,"+
+                  "\nand try again later."+
+                  "\nOr contact System Administrator.");
         }
 
         // send xhr with form data
