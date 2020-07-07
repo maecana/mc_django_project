@@ -5,12 +5,12 @@ from . import views
 # namespace for tweet_tweet project
 app_name = 'tweet_tweet'
 urlpatterns = [
-    # ex: /tweet_tweet/
+    # ex: '/'
     path('', views.index, name='index'),
-    # ex: /tweet_tweet/tweets/1/
+    # ex: 'tweets/1/'
     path('tweets/<int:tweet_id>/', views.tweet_detail_view, name='detail'),
-    # ex: /tweet_tweet/
+    # ex: 'tweets/'
     path('tweets/', views.tweet_list_view, name='list'),
-    # ex: /tweet_tweet/tweets/create/
+    # ex: 'tweets/create/'
     path('tweets/create/', views.tweet_create_view, name='create')
 ]
