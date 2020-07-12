@@ -1,3 +1,13 @@
 from django.contrib import admin
+from .models import Tweet
 
-# Register your models here.
+
+# class TweetForm(admin.ModelAdmin):
+#     class Meta:
+#         model = Tweet
+#         fields = ['content', 'user_id', 'username']
+    
+#     def __str__(self):
+#         return self.user
+
+admin.site.register(Tweet)

@@ -11,6 +11,7 @@ User = settings.AUTH_USER_MODEL
 class Tweet(models.Model):
     # create foreign_key for user
     user = models.ForeignKey(User, on_delete=models.CASCADE)
+    
     content = models.TextField(null=True, blank=True)
     image = models.FileField(upload_to='images/', null=True, blank=True)
 
@@ -25,7 +26,6 @@ class Tweet(models.Model):
     def serialize(self):
         return {
             'id': self.id,
-            'user_id': self.user,
             'content': self.content,
             'likes': random.randint(0, 122),
         }
