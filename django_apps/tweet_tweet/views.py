@@ -13,6 +13,7 @@ from .models import Tweet
 
 # GLOBAL VARIABLES
 ALLOWED_HOSTS = settings.ALLOWED_HOSTS
+LOGIN_URL = settings.LOGIN_URL
 
 # index view
 # name = index
@@ -24,10 +25,19 @@ def index(request, *args, **kwargs):
 # name = create
 # url: 'tweets/create/'
 def tweet_create_view(request, *args, **kwargs):
+    user = request.user
+
+    if not user.is_authenticated:
+        if request.is_ajax():
+            user = None
+            return JsonResponse({}, status=401) # 401==Unauthorized
+        return redirect(request, LOGIN_URL)
+
     form = FormTweet(request.POST or None)
     next_url = request.POST.get('next') or None
     if form.is_valid():
         obj = form.save(commit=False)
+        obj.user = user
         obj.save()
         
         if request.is_ajax():
