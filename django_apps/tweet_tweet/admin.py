@@ -2,12 +2,10 @@ from django.contrib import admin
 from .models import Tweet
 
 
-# class TweetForm(admin.ModelAdmin):
-#     class Meta:
-#         model = Tweet
-#         fields = ['content', 'user_id', 'username']
-    
-#     def __str__(self):
-#         return self.user
+class TweetForm(admin.ModelAdmin):
+    list_display = ['__str__', 'user']
+    search_fields = ['content', 'user__username', 'user__email']
+    class Meta:
+        model = Tweet
 
-admin.site.register(Tweet)
+admin.site.register(Tweet, TweetForm)
