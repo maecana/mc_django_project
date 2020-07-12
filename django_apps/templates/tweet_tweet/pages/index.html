@@ -33,7 +33,7 @@
     const divAlertEl = document.getElementById('alert_msg');
 
     // create alert element
-    alertElement = (msg, display) => {
+    createAlertElement = (msg, display) => {
         if(display === true) {
             divAlertEl.setAttribute('class', 'alert alert-danger');
             
@@ -73,39 +73,38 @@
             
             // elements are successfully saved
             if(responseStatus === 201) {
-                alertElement('', false);
+                createAlertElement('', false);
                 const formattedStr = formatTweetsContent(serverResponse);
                 const origHTML = tweetsElement.innerHTML;
                 tweetsElement.innerHTML = formattedStr + origHTML;
 
                 form.reset();
-            } // elements are too long
+            } // elements are too long || bad request
             else if(responseStatus === 400) {
                 const errObj = serverResponse.content;
                 if(errObj) {
                     msg = errObj[0];
-                    alertElement(msg, true);
+                    createAlertElement(msg, true);
                 } else {
                     msg = 'Oops! An error occurred.';
-                    alertElement(msg, true);
+                    createAlertElement(msg, true);
                 }
             } // unauthorized
             else if(responseStatus == 401) {
                 msg = 'Oops! You must Login!';
-                alertElement(msg, true);
+                createAlertElement(msg, true);
             } // forbidden
             else if(responseStatus == 403) {
                 msg = 'Oops! You are forbidden.';
-                alertElement(msg, true);
-            }
-            // error on server
+                createAlertElement(msg, true);
+            } // error on server
             else {
                 msg = 'Oops! An error occurred.'+
                     "\nPlease check your internet connection,"+
                     "\nand try again later."+
                     "\nOr contact System Administrator.";
                   
-                alertElement(msg, true);
+                createAlertElement(msg, true);
             }
         }
         
@@ -116,7 +115,7 @@
                   "\nand try again later."+
                   "\nOr contact System Administrator.";
             
-            alertElement(msg, true);
+            createAlertElement(msg, true);
         }
 
         // send xhr with form data
