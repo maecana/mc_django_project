@@ -30,7 +30,7 @@ def tweet_create_view(request, *args, **kwargs):
     if not user.is_authenticated:
         if request.is_ajax():
             user = None
-            return JsonResponse({}, status=401) # 401==Unauthorized
+            return JsonResponse({}, status=401) # 401==Unauthorized, 403==forbidden
         return redirect(request, LOGIN_URL)
 
     form = FormTweet(request.POST or None)
