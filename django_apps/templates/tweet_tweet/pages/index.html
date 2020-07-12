@@ -7,9 +7,10 @@
 
 <div class="row">
     <div class="col-10 mx-auto mb-4">
+        <div class="d-none" id="alert_msg"></div>
         <form class="form" method="POST" id="form-element" action="tweets/create/"> {% csrf_token %}
             <input type="hidden" value="/" name="next" />
-            <textarea class="form-control" name="content" placeholder="Your tweet goes here..."></textarea>
+            <textarea class="form-control" name="content" placeholder="Your tweet goes here..." required=required></textarea>
             <div class="float-right mt-1">
                 <button type="submit" class="btn btn-warning">Tweet</button>
             </div>
@@ -27,6 +28,20 @@
     
     // get form element
     const formElement = document.getElementById('form-element');
+
+    // get div-alert element
+    const divAlertEl = document.getElementById('alert_msg');
+
+    // create alert element
+    alertElement = (msg, display) => {
+        if(display === true) {
+            divAlertEl.setAttribute('class', 'alert alert-danger');
+            
+            divAlertEl.innerHTML = msg;
+        } else {
+            divAlertEl.setAttribute('class', 'd-none');
+        }
+    }
 
     // ajax for creating new tweet
     createTweetAjax = (event) => {
@@ -58,6 +73,7 @@
             
             // elements are successfully saved
             if(responseStatus === 201) {
+                alertElement('', false);
                 const formattedStr = formatTweetsContent(serverResponse);
                 const origHTML = tweetsElement.innerHTML;
                 tweetsElement.innerHTML = formattedStr + origHTML;
@@ -67,25 +83,40 @@
             else if(responseStatus === 400) {
                 const errObj = serverResponse.content;
                 if(errObj) {
-                    alert(errObj[0])
+                    msg = errObj[0];
+                    alertElement(msg, true);
                 } else {
-                   alert('Oops! An error occurred.');
+                    msg = 'Oops! An error occurred.';
+                    alertElement(msg, true);
                 }
-            } // error on server
+            } // unauthorized
+            else if(responseStatus == 401) {
+                msg = 'Oops! You must Login!';
+                alertElement(msg, true);
+            } // forbidden
+            else if(responseStatus == 403) {
+                msg = 'Oops! You are forbidden.';
+                alertElement(msg, true);
+            }
+            // error on server
             else {
-                alert('Oops! An error occurred.'+
-                  "\nPlease check your internet connection,"+
-                  "\nand try again later."+
-                  "\nOr contact System Administrator.");
+                msg = 'Oops! An error occurred.'+
+                    "\nPlease check your internet connection,"+
+                    "\nand try again later."+
+                    "\nOr contact System Administrator.";
+                  
+                alertElement(msg, true);
             }
         }
         
         // on server error
         xhr.onerror = () => {
-            alert('Uh-oh! An error occurred.'+
+            msg = 'Uh-oh! An error occurred.'+
                   "\nPlease check your internet connection,"+
                   "\nand try again later."+
-                  "\nOr contact System Administrator.");
+                  "\nOr contact System Administrator.";
+            
+            alertElement(msg, true);
         }
 
         // send xhr with form data
